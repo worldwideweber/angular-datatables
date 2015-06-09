@@ -933,6 +933,7 @@ function dtNGRenderer($log, $q, $compile, $timeout, DTRenderer, DTRendererServic
                     if (!angular.equals(newValue, _newValue)) {
                         _destroyAndCompile();
                     }
+                    _newValue = newValue;
                 }
                 $timeout(function() {
                     _alreadyRendered = true;
