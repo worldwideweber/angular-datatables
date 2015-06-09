@@ -895,8 +895,10 @@ function dtNGRenderer($log, $q, $compile, $timeout, DTRenderer, DTRendererServic
     function create(options) {
         var _staticHTML;
         var _oTable;
+        var _newValue;
         var _$elem;
         var _parentScope;
+        var _newParentScope;
         var dtInstance;
         var renderer = Object.create(DTRenderer);
         renderer.name = 'DTNGRenderer';
@@ -926,7 +928,7 @@ function dtNGRenderer($log, $q, $compile, $timeout, DTRenderer, DTRendererServic
 
             var _alreadyRendered = false;
 
-            _parentScope.$watchCollection(_ngRepeatAttr, function() {
+            _parentScope.$watchCollection(_ngRepeatAttr, function(newValue) {
                 if (_oTable && _alreadyRendered) {
                     if (!angular.equals(newValue, _newValue)) {
                         _destroyAndCompile();
@@ -961,10 +963,14 @@ function dtNGRenderer($log, $q, $compile, $timeout, DTRenderer, DTRendererServic
         }
 
         function _destroyAndCompile() {
+            if (_newParentScope) {
+                _newParentScope.$destroy();
+            }
             _oTable.ngDestroy();
             // Re-compile because we lost the angular binding to the existing data
             _$elem.html(_staticHTML);
-            $compile(_$elem.contents())(_parentScope);
+            _newParentScope = _parentScope.$new();
+            $compile(_$elem.contents())(_newParentScope);
         }
     }
 }
